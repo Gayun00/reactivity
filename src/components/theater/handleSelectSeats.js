@@ -16,6 +16,10 @@ export class SeatObserver {
   update(data) {
     console.log("Seat Status:", data);
   }
+
+  enableSeatSelect() {
+    //
+  }
 }
 
 const seatsSection = document.querySelector("#theaterSeat");

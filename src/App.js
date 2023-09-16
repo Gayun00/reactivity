@@ -1,3 +1,4 @@
+import { addSelectNumOfPeopleHandler } from "./components/theater/handleSelectNumOfPeople.js";
 import { addSelectSeatsHandler } from "./components/theater/handleSelectSeats.js";
 
 class App {
@@ -10,6 +11,7 @@ class App {
 
   handleTheaterClick = () => {
     addSelectSeatsHandler();
+    addSelectNumOfPeopleHandler();
   };
 
   render() {
