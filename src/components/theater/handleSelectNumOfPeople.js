@@ -4,6 +4,7 @@ import SeatObserver from "./handleSelectSeats.js";
 
 const adultBtnSection = document.querySelector("#adultBtn");
 const youthBtnSection = document.querySelector("#youthBtn");
+const handicapCheckbox = document.querySelector("#checkHandicap");
 
 export class NumOfPeopleSubject extends ObserverSubject {
   constructor() {
@@ -29,6 +30,16 @@ export class NumOfPeopleSubject extends ObserverSubject {
 
 export class NumOfPeopleObserver {
   #handleSelectedBtn(numOfPeople) {
+    const totalNum = Object.values(numOfPeople).reduce(
+      (acc, curr) => (acc += curr),
+      0
+    );
+    if (handicapCheckbox.checked && totalNum >= 4) {
+      window.alert(
+        `머쓱관의 장애인 관람석은 3석으로, 3인 이하로 선택해주세요.`
+      );
+      return;
+    }
     this.#toggleButton(numOfPeople.adult, adultBtnSection.children);
     this.#toggleButton(numOfPeople.youth, youthBtnSection.children);
   }
@@ -45,7 +56,6 @@ export class NumOfPeopleObserver {
   }
 
   update(data) {
-    console.log("num of people Status:", data);
     this.#handleSelectedBtn(data);
   }
 }

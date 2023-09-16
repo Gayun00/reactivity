@@ -24,7 +24,6 @@ export class HandicapCheckObserver {
       (acc, curr) => (acc += curr),
       0
     );
-    console.log(totalNum, totalNum > 0, totalNum <= 4, "totalNum");
     if (totalNum > 0 && totalNum <= 4) {
       this.#handleCheckboxEnable(true);
       return;
