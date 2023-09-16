@@ -139,7 +139,8 @@
 
       for (let i = 0; i < 39; i++) {
         const seatBtn = document.createElement("button");
-        seatBtn.setAttribute("class", "seat disabled");
+        seatBtn.setAttribute("class", "seat");
+        <!-- seatBtn.setAttribute("class", "seat disabled"); -->
         seatBtn.appendChild(document.createTextNode((i % 13) + 1));
         document.getElementById("theaterSeat").appendChild(seatBtn);
 
