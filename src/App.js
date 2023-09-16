@@ -1,3 +1,4 @@
+import { handleHandicapCheckHandler } from "./components/theater/handleSelectHandicap.js";
 import { addSelectNumOfPeopleHandler } from "./components/theater/handleSelectNumOfPeople.js";
 import { addSelectSeatsHandler } from "./components/theater/handleSelectSeats.js";
 
@@ -12,6 +13,7 @@ class App {
   handleTheaterClick = () => {
     addSelectSeatsHandler();
     addSelectNumOfPeopleHandler();
+    handleHandicapCheckHandler();
   };
 
   render() {

@@ -1,4 +1,5 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
+import { HandicapCheckObserver } from "./handleSelectHandicap.js";
 import SeatObserver from "./handleSelectSeats.js";
 
 const adultBtnSection = document.querySelector("#adultBtn");
@@ -7,7 +8,17 @@ const youthBtnSection = document.querySelector("#youthBtn");
 export class NumOfPeopleSubject extends ObserverSubject {
   constructor() {
     super();
-    this.numOfPeopleStatus = {};
+    this.numOfPeopleStatus = {
+      adult: 0,
+      youth: 0,
+    };
+    this.init();
+  }
+
+  init() {
+    setTimeout(() => {
+      super.notify(this.numOfPeopleStatus);
+    }, 0);
   }
 
   updateNumSelection(age, count) {
@@ -42,9 +53,11 @@ export class NumOfPeopleObserver {
 const numOfPeopleSubject = new NumOfPeopleSubject();
 const numOfPeopleObserver = new NumOfPeopleObserver();
 const seatObserver = new SeatObserver();
+const handicapCheckObserver = new HandicapCheckObserver();
 
 numOfPeopleSubject.addObserver(numOfPeopleObserver);
 numOfPeopleSubject.addObserver(seatObserver);
+numOfPeopleSubject.addObserver(handicapCheckObserver);
 
 export const addSelectNumOfPeopleHandler = () => {
   youthBtnSection.addEventListener("click", (e) => {
