@@ -16,10 +16,10 @@ export class SeatSubject extends ObserverSubject {
 
 export class SeatObserver {
   update(data) {
-    this.handleSeatSelectEnable(data);
+    this.#handleSeatSelectEnable(data);
   }
 
-  handleSeatSelectEnable(numOfPeople) {
+  #handleSeatSelectEnable(numOfPeople) {
     const totalNum = Object.values(numOfPeople).reduce(
       (acc, curr) => (acc += curr),
       0
