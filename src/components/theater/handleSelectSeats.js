@@ -35,7 +35,6 @@ export class SeatObserver {
 
   #handleSeatDisable(selectedSeats) {
     const { general, musseukbox, handicap } = selectedSeats;
-
     if (general) {
       this.#disableSeats("musseukbox");
       this.#disableSeats("handicap");
@@ -67,6 +66,15 @@ export class SeatObserver {
   }
 }
 
+const handleSelectedSeat = (target) => {
+  for (const seat of seatsSection.children) {
+    if (seat.classList.contains("clicked")) {
+      if (seat.innerHTML !== target.innerHTML) seat.classList.remove("clicked");
+    }
+  }
+  target.classList.add("clicked");
+};
+
 export const addSelectSeatsHandler = () => {
   const seatSubject = new SeatSubject();
   const seatObserver = new SeatObserver();
@@ -77,7 +85,12 @@ export const addSelectSeatsHandler = () => {
 
   seatsSection.addEventListener("click", (e) => {
     const target = e.target;
-    seatSubject.updateSeatSelection(target.classList[1] || "general", true);
+    handleSelectedSeat(target);
+    let classname = "general";
+    if (target.classList.contains("musseukbox")) classname = "musseukbox";
+    if (target.classList.contains("handicap")) classname = "handicap";
+
+    seatSubject.updateSeatSelection(classname, true);
   });
 };
 
