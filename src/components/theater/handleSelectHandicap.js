@@ -19,16 +19,23 @@ export class HandicapCheckObserver {
     handicapCheckbox.disabled = !isEnabled;
   }
 
-  update(data) {
-    const totalNum = Object.values(data).reduce(
-      (acc, curr) => (acc += curr),
-      0
-    );
-    if (totalNum > 0 && totalNum <= 4) {
-      this.#handleCheckboxEnable(true);
-      return;
+  update({ numOfPeople, selectedSeats }) {
+    if (numOfPeople) {
+      const totalNum = Object.values(numOfPeople).reduce(
+        (acc, curr) => (acc += curr),
+        0
+      );
+      if (totalNum > 0 && totalNum <= 4) {
+        this.#handleCheckboxEnable(true);
+        return;
+      }
+      this.#handleCheckboxEnable(false);
     }
-    this.#handleCheckboxEnable(false);
+
+    if (selectedSeats) {
+      if (selectedSeats.general || selectedSeats.musseukbox)
+        this.#handleCheckboxEnable(false);
+    }
   }
 }
 

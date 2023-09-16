@@ -18,13 +18,13 @@ export class NumOfPeopleSubject extends ObserverSubject {
 
   init() {
     setTimeout(() => {
-      super.notify(this.numOfPeopleStatus);
+      super.notify({ numOfPeople: this.numOfPeopleStatus });
     }, 0);
   }
 
   updateNumSelection(age, count) {
     this.numOfPeopleStatus[age] = count;
-    super.notify(this.numOfPeopleStatus);
+    super.notify({ numOfPeople: this.numOfPeopleStatus });
   }
 }
 
@@ -55,8 +55,8 @@ export class NumOfPeopleObserver {
     }
   }
 
-  update(data) {
-    this.#handleSelectedBtn(data);
+  update({ numOfPeople }) {
+    this.#handleSelectedBtn(numOfPeople);
   }
 }
 
