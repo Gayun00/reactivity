@@ -1,5 +1,7 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
 
+const seatsSection = document.querySelector("#theaterSeat");
+
 export class SeatSubject extends ObserverSubject {
   constructor() {
     super();
@@ -14,15 +16,28 @@ export class SeatSubject extends ObserverSubject {
 
 export class SeatObserver {
   update(data) {
-    console.log("Seat Status:", data);
+    this.handleSeatSelectEnable(data);
   }
 
-  enableSeatSelect() {
-    //
+  handleSeatSelectEnable(numOfPeople) {
+    const totalNum = Object.values(numOfPeople).reduce(
+      (acc, curr) => (acc += curr),
+      0
+    );
+    const seats = seatsSection.children;
+
+    if (!totalNum) {
+      for (const seat of seats) {
+        seat.classList.add("disabled");
+      }
+      return;
+    }
+
+    for (const seat of seats) {
+      seat.classList.remove("disabled");
+    }
   }
 }
-
-const seatsSection = document.querySelector("#theaterSeat");
 
 export const addSelectSeatsHandler = () => {
   const seatSubject = new SeatSubject();
