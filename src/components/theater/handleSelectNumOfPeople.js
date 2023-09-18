@@ -39,6 +39,10 @@ export class NumOfPeopleSubject extends ObserverSubject {
     );
   }
 
+  get numOfPeopleData() {
+    return this.numOfPeople;
+  }
+
   updateNumSelection(age, count) {
     this.numOfPeople[age] = count;
     super.notify({ numOfPeople: this.numOfPeople });

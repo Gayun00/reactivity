@@ -1,4 +1,5 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
+import { TicketPriceObserver } from "./handlePrice.js";
 import { HandicapCheckObserver } from "./handleSelectHandicap.js";
 import { NumOfPeopleSubject } from "./handleSelectNumOfPeople.js";
 
@@ -21,6 +22,8 @@ export class SeatSubject extends ObserverSubject {
 
   updateSeatSelection(seatType, seatNum) {
     const totalNumOfPeople = NumOfPeopleSubject.getInstace().totalCount;
+    const numOfPeople = NumOfPeopleSubject.getInstace().numOfPeople;
+
     const isClickedSeat = this.selectedSeats.some(
       (seat) => seat.seatNum === seatNum
     );
@@ -126,9 +129,11 @@ export const addSelectSeatsHandler = () => {
   const seatSubject = new SeatSubject();
   const seatObserver = new SeatObserver();
   const handicapCheckObserver = new HandicapCheckObserver();
+  const ticketPriceObserver = new TicketPriceObserver();
 
   seatSubject.addObserver(seatObserver);
   seatSubject.addObserver(handicapCheckObserver);
+  seatSubject.addObserver(ticketPriceObserver);
 
   seatsSection.addEventListener("click", (e) => {
     const target = e.target;
