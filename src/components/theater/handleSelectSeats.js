@@ -2,6 +2,7 @@ import ObserverSubject from "../../utils/ObserverSubject.js";
 import { HandicapCheckObserver } from "./handleSelectHandicap.js";
 
 const seatsSection = document.querySelector("#theaterSeat");
+const remainSeatText = document.querySelector("#remainSeatCnt");
 
 export class SeatSubject extends ObserverSubject {
   constructor() {
@@ -61,7 +62,15 @@ export class SeatObserver {
     }
 
     for (const seat of seats) {
-      seat.classList.remove("disabled");
+      if (seat.classList.contains("musseukbox")) {
+        if (totalNum % 2 == 0) {
+          seat.classList.remove("disabled");
+        } else {
+          seat.classList.add("disabled");
+        }
+      } else {
+        seat.classList.remove("disabled");
+      }
     }
   }
 }
@@ -75,6 +84,16 @@ const handleSelectedSeat = (target) => {
   target.classList.add("clicked");
 };
 
+const handleRemainSeats = () => {
+  let count = 0;
+  for (const seat of seatsSection.children) {
+    if (!seat.classList.contains("clicked")) {
+      count++;
+    }
+  }
+  remainSeatText.innerText = count;
+};
+
 export const addSelectSeatsHandler = () => {
   const seatSubject = new SeatSubject();
   const seatObserver = new SeatObserver();
@@ -86,6 +105,7 @@ export const addSelectSeatsHandler = () => {
   seatsSection.addEventListener("click", (e) => {
     const target = e.target;
     handleSelectedSeat(target);
+    handleRemainSeats();
     let classname = "general";
     if (target.classList.contains("musseukbox")) classname = "musseukbox";
     if (target.classList.contains("handicap")) classname = "handicap";
