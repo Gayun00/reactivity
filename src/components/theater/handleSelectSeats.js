@@ -5,13 +5,13 @@ import { NumOfPeopleSubject } from "./handleSelectNumOfPeople.js";
 const seatsSection = document.querySelector("#theaterSeat");
 const remainSeatText = document.querySelector("#remainSeatCnt");
 
-const ininSeats = () => {
+const initSeats = () => {
   for (let i = 0; i < seatsSection.children.length; i++) {
     seatsSection.children[i].setAttribute("data-seatNum", i);
   }
 };
 
-ininSeats();
+initSeats();
 
 export class SeatSubject extends ObserverSubject {
   constructor() {
@@ -76,13 +76,19 @@ export class SeatObserver {
   }
 
   #handleSeatDisable(selectedSeats) {
-    const { general, musseukbox, handicap } = selectedSeats;
-    if (general) {
+    const hasGeneral = selectedSeats.some(
+      (selectedSeat) => selectedSeat.seatType === "general"
+    );
+    const hasMusseuk = selectedSeats.some(
+      (selectedSeat) => selectedSeat.seatType === "musseukbox"
+    );
+
+    if (hasGeneral) {
       this.#disableSeats("musseukbox");
       this.#disableSeats("handicap");
     }
 
-    if (musseukbox) {
+    if (hasMusseuk) {
       this.#disableSeats("seat:not(.handicap):not(.musseukbox)");
       this.#disableSeats("handicap");
     }
@@ -116,16 +122,6 @@ export class SeatObserver {
   }
 }
 
-const handleRemainSeats = () => {
-  let count = 0;
-  for (const seat of seatsSection.children) {
-    if (!seat.classList.contains("clicked")) {
-      count++;
-    }
-  }
-  remainSeatText.innerText = count;
-};
-
 export const addSelectSeatsHandler = () => {
   const seatSubject = new SeatSubject();
   const seatObserver = new SeatObserver();
@@ -137,7 +133,6 @@ export const addSelectSeatsHandler = () => {
   seatsSection.addEventListener("click", (e) => {
     const target = e.target;
     const seatNum = target.getAttribute("data-seatnum");
-    // handleRemainSeats();
     let classname = "general";
     if (target.classList.contains("musseukbox")) classname = "musseukbox";
     if (target.classList.contains("handicap")) classname = "handicap";
