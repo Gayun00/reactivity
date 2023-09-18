@@ -1,5 +1,6 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
 import { HandicapCheckObserver } from "./handleSelectHandicap.js";
+import { NumOfPeopleSubject } from "./handleSelectNumOfPeople.js";
 
 const seatsSection = document.querySelector("#theaterSeat");
 const remainSeatText = document.querySelector("#remainSeatCnt");
@@ -19,7 +20,14 @@ export class SeatSubject extends ObserverSubject {
   }
 
   updateSeatSelection(seatType, seatNum) {
-    if (this.selectedSeats.some((seat) => seat.seatNum === seatNum)) {
+    const totalNumOfPeople = NumOfPeopleSubject.getInstace().totalCount;
+    const isClickedSeat = this.selectedSeats.some(
+      (seat) => seat.seatNum === seatNum
+    );
+    if (!isClickedSeat && totalNumOfPeople === this.selectedSeats.length)
+      return;
+
+    if (isClickedSeat) {
       this.selectedSeats = this.selectedSeats.filter(
         (seat) => seat.seatNum !== seatNum
       );
@@ -27,7 +35,6 @@ export class SeatSubject extends ObserverSubject {
       this.selectedSeats.push({ seatType, seatNum });
     }
 
-    console.log(this.selectedSeats);
     super.notify({ selectedSeats: this.selectedSeats });
   }
 }
@@ -38,6 +45,7 @@ export class SeatObserver {
     if (selectedSeats) {
       this.#handleSeatDisable(selectedSeats);
       this.#selectSeat(selectedSeats);
+      this.#updateRemainSeats(selectedSeats);
     }
   }
 
@@ -52,6 +60,11 @@ export class SeatObserver {
       );
       clickedSeat.classList.add("clicked");
     });
+  }
+
+  #updateRemainSeats(selectedSeats) {
+    const totalSeatCount = seatsSection.children.length;
+    remainSeatText.innerText = totalSeatCount - selectedSeats.length;
   }
 
   #disableSeats(classname) {

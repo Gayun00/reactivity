@@ -9,22 +9,39 @@ const handicapCheckbox = document.querySelector("#checkHandicap");
 export class NumOfPeopleSubject extends ObserverSubject {
   constructor() {
     super();
-    this.numOfPeopleStatus = {
+    this.numOfPeople = {
       adult: 0,
       youth: 0,
     };
     this.init();
+
+    if (NumOfPeopleSubject.instance) return;
+    NumOfPeopleSubject.instance = this;
+  }
+
+  static getInstace() {
+    if (!this.instance) {
+      this.instance = new NumOfPeopleSubject();
+    }
+    return this.instance;
   }
 
   init() {
     setTimeout(() => {
-      super.notify({ numOfPeople: this.numOfPeopleStatus });
+      super.notify({ numOfPeople: this.numOfPeople });
     }, 0);
   }
 
+  get totalCount() {
+    return Object.values(this.numOfPeople).reduce(
+      (acc, curr) => (acc += curr),
+      0
+    );
+  }
+
   updateNumSelection(age, count) {
-    this.numOfPeopleStatus[age] = count;
-    super.notify({ numOfPeople: this.numOfPeopleStatus });
+    this.numOfPeople[age] = count;
+    super.notify({ numOfPeople: this.numOfPeople });
   }
 }
 
