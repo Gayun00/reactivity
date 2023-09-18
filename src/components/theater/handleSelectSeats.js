@@ -185,6 +185,11 @@ export class SeatObserver {
   }
 }
 
+export const resetSelectedSeats = () => {
+  SeatSubject.getInstace().resetSelectedSeats();
+  NumOfPeopleSubject.getInstace().resetNum();
+};
+
 export const addSelectSeatsHandler = () => {
   const seatSubject = new SeatSubject();
   const seatObserver = new SeatObserver();
@@ -206,8 +211,7 @@ export const addSelectSeatsHandler = () => {
   });
 
   reselectBtn.addEventListener("click", () => {
-    SeatSubject.getInstace().resetSelectedSeats();
-    NumOfPeopleSubject.getInstace().resetNum();
+    resetSelectedSeats();
   });
 };
 

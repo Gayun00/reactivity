@@ -1,4 +1,5 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
+import { resetSelectedSeats } from "./handleSelectSeats.js";
 
 const handicapCheckbox = document.querySelector("#checkHandicap");
 const handicapSeats = document.querySelectorAll(".seat.handicap");
@@ -54,12 +55,7 @@ const handleCancelHandicapSeat = () => {
   if (!hasSelectedSeat) return;
 
   window.alert("선택하신 좌석을 모두 취소하고 다시 선택하시겠습니까?");
-  // 좌석 예매 초기화 로직으로 변경
-  for (const seat of handicapSeats) {
-    if (seat.classList.contains("clicked")) {
-      seat.classList.remove("clicked");
-    }
-  }
+  resetSelectedSeats();
 };
 
 export const handleHandicapCheckHandler = () => {
