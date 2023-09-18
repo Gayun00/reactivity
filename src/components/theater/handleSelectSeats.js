@@ -4,18 +4,30 @@ import { HandicapCheckObserver } from "./handleSelectHandicap.js";
 const seatsSection = document.querySelector("#theaterSeat");
 const remainSeatText = document.querySelector("#remainSeatCnt");
 
+const ininSeats = () => {
+  for (let i = 0; i < seatsSection.children.length; i++) {
+    seatsSection.children[i].setAttribute("data-seatNum", i);
+  }
+};
+
+ininSeats();
+
 export class SeatSubject extends ObserverSubject {
   constructor() {
     super();
-    this.selectedSeats = {
-      general: false,
-      musseukbox: false,
-      handicap: false,
-    };
+    this.selectedSeats = [];
   }
 
-  updateSeatSelection(seatType, isSelected) {
-    this.selectedSeats[seatType] = isSelected;
+  updateSeatSelection(seatType, seatNum) {
+    if (this.selectedSeats.some((seat) => seat.seatNum === seatNum)) {
+      this.selectedSeats = this.selectedSeats.filter(
+        (seat) => seat.seatNum !== seatNum
+      );
+    } else {
+      this.selectedSeats.push({ seatType, seatNum });
+    }
+
+    console.log(this.selectedSeats);
     super.notify({ selectedSeats: this.selectedSeats });
   }
 }
@@ -23,7 +35,23 @@ export class SeatSubject extends ObserverSubject {
 export class SeatObserver {
   update({ numOfPeople, selectedSeats }) {
     if (numOfPeople) this.#handleSeatSelectEnable(numOfPeople);
-    if (selectedSeats) this.#handleSeatDisable(selectedSeats);
+    if (selectedSeats) {
+      this.#handleSeatDisable(selectedSeats);
+      this.#selectSeat(selectedSeats);
+    }
+  }
+
+  #selectSeat(selectedSeats) {
+    for (const seat of seatsSection.children) {
+      seat.classList.remove("clicked");
+    }
+
+    selectedSeats.forEach((selectedSeat) => {
+      const clickedSeat = document.querySelector(
+        `button[data-seatnum="${selectedSeat.seatNum}"]`
+      );
+      clickedSeat.classList.add("clicked");
+    });
   }
 
   #disableSeats(classname) {
@@ -75,15 +103,6 @@ export class SeatObserver {
   }
 }
 
-const handleSelectedSeat = (target) => {
-  for (const seat of seatsSection.children) {
-    if (seat.classList.contains("clicked")) {
-      if (seat.innerHTML !== target.innerHTML) seat.classList.remove("clicked");
-    }
-  }
-  target.classList.add("clicked");
-};
-
 const handleRemainSeats = () => {
   let count = 0;
   for (const seat of seatsSection.children) {
@@ -104,13 +123,13 @@ export const addSelectSeatsHandler = () => {
 
   seatsSection.addEventListener("click", (e) => {
     const target = e.target;
-    handleSelectedSeat(target);
-    handleRemainSeats();
+    const seatNum = target.getAttribute("data-seatnum");
+    // handleRemainSeats();
     let classname = "general";
     if (target.classList.contains("musseukbox")) classname = "musseukbox";
     if (target.classList.contains("handicap")) classname = "handicap";
 
-    seatSubject.updateSeatSelection(classname, true);
+    seatSubject.updateSeatSelection(classname, seatNum);
   });
 };
 
