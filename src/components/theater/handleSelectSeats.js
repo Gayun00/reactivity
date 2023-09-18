@@ -5,6 +5,8 @@ import { NumOfPeopleSubject } from "./handleSelectNumOfPeople.js";
 
 const seatsSection = document.querySelector("#theaterSeat");
 const remainSeatText = document.querySelector("#remainSeatCnt");
+const handicapCheckbox = document.querySelector("#checkHandicap");
+const reselectBtn = document.querySelector("#reselect");
 
 const initSeats = () => {
   for (let i = 0; i < seatsSection.children.length; i++) {
@@ -38,7 +40,22 @@ export class SeatSubject extends ObserverSubject {
     super.notify({ selectedSeats: this.#selectedSeats });
   }
 
+  #handleHandicapSeat(seatType) {
+    const hasToCheckHandicap =
+      seatType === "handicap" && !handicapCheckbox.checked;
+
+    if (hasToCheckHandicap) {
+      window.alert(
+        `선택하신 좌석은 장애인석으로 일반고객은 예매할 수 없는 좌석입니다.`
+      );
+    }
+    return hasToCheckHandicap;
+  }
+
   updateSeatSelection(seatType, seatNum) {
+    const hasToCheckHandicap = this.#handleHandicapSeat(seatType);
+    if (hasToCheckHandicap) return;
+
     const totalNumOfPeople = NumOfPeopleSubject.getInstace().totalCount;
 
     const isClickedSeat = this.#selectedSeats.some(
@@ -186,6 +203,11 @@ export const addSelectSeatsHandler = () => {
     if (target.classList.contains("handicap")) classname = "handicap";
 
     seatSubject.updateSeatSelection(classname, seatNum);
+  });
+
+  reselectBtn.addEventListener("click", () => {
+    SeatSubject.getInstace().resetSelectedSeats();
+    NumOfPeopleSubject.getInstace().resetNum();
   });
 };
 

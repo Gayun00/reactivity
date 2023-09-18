@@ -48,6 +48,7 @@ export class NumOfPeopleSubject extends ObserverSubject {
       adult: 0,
       youth: 0,
     };
+    super.notify({ numOfPeople: this.numOfPeople });
   }
 
   updateNumSelection(age, count) {

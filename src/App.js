@@ -4,7 +4,7 @@ import { addSelectSeatsHandler } from "./components/theater/handleSelectSeats.js
 
 class App {
   constructor() {
-    this.theaterBtn = document.querySelector("#theaterBtn"); // 1
+    this.theaterBtn = document.querySelector("#theaterBtn");
     this.render();
   }
 
