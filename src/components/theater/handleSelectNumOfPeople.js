@@ -1,6 +1,6 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
 import { HandicapCheckObserver } from "./handleSelectHandicap.js";
-import SeatObserver from "./handleSelectSeats.js";
+import SeatObserver, { SeatSubject } from "./handleSelectSeats.js";
 
 const adultBtnSection = document.querySelector("#adultBtn");
 const youthBtnSection = document.querySelector("#youthBtn");
@@ -43,9 +43,31 @@ export class NumOfPeopleSubject extends ObserverSubject {
     return this.numOfPeople;
   }
 
+  resetNum() {
+    this.numOfPeople = {
+      adult: 0,
+      youth: 0,
+    };
+  }
+
   updateNumSelection(age, count) {
+    this.#handleChangeNumOfPeople(age, count);
     this.numOfPeople[age] = count;
     super.notify({ numOfPeople: this.numOfPeople });
+  }
+
+  #handleChangeNumOfPeople(age, count) {
+    const updateCount = { ...this.numOfPeople, [age]: count };
+    const updatedTotalCount = Object.values(updateCount).reduce(
+      (acc, curr) => (acc += curr),
+      0
+    );
+    const selectedSeatCount = SeatSubject.getInstace().selectedSeats.length;
+
+    if (updatedTotalCount < selectedSeatCount) {
+      window.alert(`선택하신 좌석을 모두 취소하고 다시 선택하시겠습니까?`);
+      SeatSubject.getInstace().resetSelectedSeats();
+    }
   }
 }
 

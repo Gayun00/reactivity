@@ -15,30 +15,47 @@ const initSeats = () => {
 initSeats();
 
 export class SeatSubject extends ObserverSubject {
+  #selectedSeats = [];
   constructor() {
     super();
-    this.selectedSeats = [];
+    if (SeatSubject.instance) return;
+    SeatSubject.instance = this;
+  }
+
+  static getInstace() {
+    if (!this.instance) {
+      this.instance = new SeatSubject();
+    }
+    return this.instance;
+  }
+
+  get selectedSeats() {
+    return this.#selectedSeats;
+  }
+
+  resetSelectedSeats() {
+    this.#selectedSeats = [];
+    super.notify({ selectedSeats: this.#selectedSeats });
   }
 
   updateSeatSelection(seatType, seatNum) {
     const totalNumOfPeople = NumOfPeopleSubject.getInstace().totalCount;
-    const numOfPeople = NumOfPeopleSubject.getInstace().numOfPeople;
 
-    const isClickedSeat = this.selectedSeats.some(
+    const isClickedSeat = this.#selectedSeats.some(
       (seat) => seat.seatNum === seatNum
     );
-    if (!isClickedSeat && totalNumOfPeople === this.selectedSeats.length)
+    if (!isClickedSeat && totalNumOfPeople === this.#selectedSeats.length)
       return;
 
     if (isClickedSeat) {
-      this.selectedSeats = this.selectedSeats.filter(
+      this.#selectedSeats = this.#selectedSeats.filter(
         (seat) => seat.seatNum !== seatNum
       );
     } else {
-      this.selectedSeats.push({ seatType, seatNum });
+      this.#selectedSeats.push({ seatType, seatNum });
     }
 
-    super.notify({ selectedSeats: this.selectedSeats });
+    super.notify({ selectedSeats: this.#selectedSeats });
   }
 }
 
@@ -53,8 +70,10 @@ export class SeatObserver {
   }
 
   #selectSeat(selectedSeats) {
+    const totalNum = NumOfPeopleSubject.getInstace().totalCount;
+
     for (const seat of seatsSection.children) {
-      seat.classList.remove("clicked");
+      if (seat.classList.contains("clicked")) seat.classList.remove("clicked");
     }
 
     selectedSeats.forEach((selectedSeat) => {
@@ -63,6 +82,30 @@ export class SeatObserver {
       );
       clickedSeat.classList.add("clicked");
     });
+
+    if (totalNum === selectedSeats.length) {
+      this.#disableRemainSeats();
+    }
+
+    if (!selectedSeats) {
+      this.#resetSelectedSeats();
+    }
+  }
+
+  #resetSelectedSeats() {
+    for (const seat of seatsSection.children) {
+      if (!seat.classList.contains("clicked")) {
+        seat.classList.add("clicked");
+      }
+    }
+  }
+
+  #disableRemainSeats() {
+    for (const seat of seatsSection.children) {
+      if (!seat.classList.contains("clicked")) {
+        seat.classList.add("disabled");
+      }
+    }
   }
 
   #updateRemainSeats(selectedSeats) {
