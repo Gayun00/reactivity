@@ -1,6 +1,7 @@
 import ObserverSubject from "../../utils/ObserverSubject.js";
 
 const handicapCheckbox = document.querySelector("#checkHandicap");
+const handicapSeats = document.querySelectorAll(".seat.handicap");
 
 export class HandicapCheckSubject extends ObserverSubject {
   constructor() {
@@ -39,6 +40,29 @@ export class HandicapCheckObserver {
   }
 }
 
+const handleCancelHandicapSeat = () => {
+  let hasSelectedSeat = false;
+
+  if (handicapCheckbox.checked) return;
+
+  for (const seat of handicapSeats) {
+    if (seat.classList.contains("clicked")) {
+      hasSelectedSeat = true;
+    }
+  }
+
+  if (!hasSelectedSeat) return;
+
+  window.alert("취소하시겠습니까?");
+  for (const seat of handicapSeats) {
+    if (seat.classList.contains("clicked")) {
+      seat.classList.remove("clicked");
+    }
+  }
+};
+
 export const handleHandicapCheckHandler = () => {
-  handicapCheckbox.addEventListener("click", () => {});
+  handicapCheckbox.addEventListener("click", () => {
+    handleCancelHandicapSeat();
+  });
 };
